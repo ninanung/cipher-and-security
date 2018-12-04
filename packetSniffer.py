@@ -1,6 +1,14 @@
 from socket import *
 import os
 
+def recvData(sock):
+    data = ''
+    try:
+        data = sock.recvfrom(65565)
+    except timeout:
+        data = ''
+    return data[0]
+
 def sniffing(host):
     if os.name == 'nt':
         sock_protocol = IPPROTO_IP
@@ -11,10 +19,16 @@ def sniffing(host):
     sniffer.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
     if os.name == 'nt':
         sniffer.ioctl(SIO_RCVALL, RCVALL_ON)
-    packet = sniffer.recvfrom(65565)
-    print(packet)
-    if os.name == 'nt':
-        sniffer.ioctl(SIO_RCVALL, RCVALL_OFF)
+
+    count = 1
+    try:
+        while True:
+            data = recvData(sniffer)
+            print(data[:20])
+            count += 1
+    except KeyboardInterrupt:
+        if os.name == 'nt':
+            sniffer.ioctl(SIO_RCVALL, RCVALL_OFF)
 
 def main():
     host = gethostbyname(gethostname())
