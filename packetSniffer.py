@@ -1,5 +1,27 @@
 from socket import *
 import os
+import struct
+
+def parseHeader(data):
+    header = struct.unpack('!BBHHHBBH4s4s', data[:20])
+    return header
+
+def getDatagramSize(header):
+    return header[2]
+
+def getProtocol(header):
+    proto = header[6]
+    if proto is 1:
+        return 'ICMP'
+    elif proto is 6:
+        return 'TCP'
+    elif proto is 17: 
+        return 'UDP'
+
+def getIPs(header):
+    src = inet_ntoa(header[8])
+    dest = inet_ntoa(header[9])
+    return (src, dest)
 
 def recvData(sock):
     data = ''
@@ -24,7 +46,14 @@ def sniffing(host):
     try:
         while True:
             data = recvData(sniffer)
-            print(data[:20])
+            print(str(count) + ' sniffed time')
+            header = parseHeader(data[:20])
+            print('datagram size = %s' %str(getDatagramSize(header)))
+            print('protocol = %s' %getProtocol(header))
+            src, dest = getIPs(header)
+            print('source ip = %s' %src)
+            print('destination ip = %s' %dest)
+            print('--------------------------------------------')
             count += 1
     except KeyboardInterrupt:
         if os.name == 'nt':
