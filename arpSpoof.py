@@ -19,7 +19,7 @@ def restoreARP(victimip, gatewayip, victimmac, gatewaymac):
 
 def main():
     gatewayip = '192.168.1.1'#input('gatewayip : ')
-    victimip = '192.168.1.180'#input('victimip : ')
+    victimip = '192.168.1.122'#input('victimip : ')
 
     victimmac = getMAC(victimip)
     gatewaymac = getMAC(gatewayip)
