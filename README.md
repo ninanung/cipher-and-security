@@ -1,2 +1,4 @@
 # cipher-and-security
-security study sample code with python3
+
+## Why?
+I realized that i know nothing about web security.
